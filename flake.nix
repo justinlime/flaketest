@@ -1,11 +1,18 @@
 {
-  description = "A very basic flake";
+    description = "A Discox Flake";
 
-  outputs = { self, nixpkgs }: {
+    inputs = {
+        nixpkgs.url = "github.com/NixOS/nixpkgs/nixos-unstable";
+    };
 
-    packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
-
-    packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
-
-  };
+    outputs = { self, nixpkgs }: 
+    let
+        system = "x86_64-linux";
+        pkgs = import nixpkgs { inherit system; };
+    in
+    {
+        devShells.${system}.default = pkgs.mkShell {
+            packages = [ pkgs.cowsay ];
+        };
+    };
 }
